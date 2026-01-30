@@ -210,19 +210,96 @@
     /**
      * Function to load data from an external JSON file with a fallback.
      */
+    // async function loadData() {
+    //     try {
+    //         const response = await fetch('./sample.json');
+    //         if (!response.ok) {
+    //             throw new Error(`HTTP error: status: ${response.status}`);
+    //         }
+    //         currentData = await response.json();
+    //         console.log("sample.json");
+    //     } catch (error) {
+    //         console.error("Failed to load sample.json. Using SAMPLE_DATA");
+    //         currentData = JSON.parse(JSON.stringify(SAMPLE_DATA));
+    //     }
+    // }
+    // ===========================
+    // Data loading with modes (URL params: m=, id=)
+    // ===========================
+    function getUrlParams() {
+        const params = new URLSearchParams(window.location.search);
+        return {
+            mode: (params.get('m') || 'g').toLowerCase(),   // default: github mode
+            id: (params.get('id') || '').trim()
+        };
+    }
+
+    function deepClone(obj) {
+        return JSON.parse(JSON.stringify(obj));
+    }
+
+    function fallbackToSample(reason, error) {
+        console.error(`Falling back to SAMPLE_DATA: ${reason}`, error || '');
+        return deepClone(SAMPLE_DATA);
+    }
+
+    async function loadFromGitHub(id) {
+        // id=sample => ./sample.json
+        const fileBase = id || 'sample';
+        const url = `./${encodeURIComponent(fileBase)}.json`;
+
+        const response = await fetch(url, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`GitHub JSON fetch failed: ${response.status} ${response.statusText}`);
+
+        const data = await response.json();
+        validateData(data); // ensure correct format
+        console.log(`Loaded data from GitHub file: ${url}`);
+        return data;
+    }
+
+    async function loadFromJsonHosting(id) {
+        // Example: https://jsonhosting.com/api/json/b9b238be/raw
+        const safeId = id || 'b9b238be';
+        const url = `https://jsonhosting.com/api/json/${encodeURIComponent(safeId)}/raw`;
+
+        const response = await fetch(url, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`JSONHosting fetch failed: ${response.status} ${response.statusText}`);
+
+        // jsonhosting raw often returns an escaped JSON string; your parser handles both escaped and normal JSON text
+        const text = await response.text();
+        const data = jsonHostingParser(text);
+        validateData(data); // ensure correct format
+        console.log(`Loaded data from JSONHosting: ${url}`);
+        return data;
+    }
+
+    /**
+     * Master loader: chooses source by URL param.
+     * - m=g&id=sample => ./sample.json
+     * - m=jsonhosting&id=12345678 => jsonhosting raw endpoint
+     * Any failure => SAMPLE_DATA
+     */
     async function loadData() {
+        const { mode, id } = getUrlParams();
+
         try {
-            const response = await fetch('./sample.json');
-            if (!response.ok) {
-                throw new Error(`HTTP error: status: ${response.status}`);
+            if (mode === 'jsonhosting') {
+                currentData = await loadFromJsonHosting(id);
+                return;
             }
-            currentData = await response.json();
-            console.log("sample.json");
-        } catch (error) {
-            console.error("Failed to load sample.json. Using SAMPLE_DATA");
-            currentData = JSON.parse(JSON.stringify(SAMPLE_DATA));
+
+            if (mode === 'g') {
+                currentData = await loadFromGitHub(id || 'sample');
+                return;
+            }
+
+            // Unknown mode => fallback
+            currentData = fallbackToSample(`Unknown mode "${mode}"`);
+        } catch (e) {
+            currentData = fallbackToSample(`loadData() failed in mode="${mode}" id="${id}"`, e);
         }
     }
+
 
     // ====== DOM refs ======
     const albumEl = document.getElementById('album');
