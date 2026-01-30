@@ -146,10 +146,6 @@
             .grid { gap: 10px; }
             .board { padding: 24px 14px 14px; }
         }
-
-        [contenteditable="true"] br {
-            display:none;
-        }
     </style>
 </head>
 <body>
@@ -165,7 +161,7 @@
                 <rect x="11" y="1" width="10" height="18" rx="2"/>
                 </g>
             </svg>
-            <span contenteditable="true">Cards</span>
+            <span id="pageTitle" contenteditable="true">Cards</span>
         </div>
         <nav class="tabs" aria-label="Views">
             <button class="tab active" data-tab="album">
@@ -209,7 +205,7 @@
     // ===========================
     // Embedded sample JSON (editable via the Editor tab)
     // ===========================
-    const SAMPLE_DATA = {"pages":[[null,"https://www.pokemon-card.com/assets/images/card_images/large/SM11a/037054_T_OKIDOHAKASENOSETTEINGU.jpg",null,"https://www.pokemon-card.com/assets/images/card_images/large/SM12a/037464_T_BURUNOTANSAKU.jpg","https://www.pokemon-card.com/assets/images/card_images/large/SM12a/037469_T_REDDONOCHOUSEN.jpg","https://www.pokemon-card.com/assets/images/card_images/large/SM12a/037461_T_GURINNOSENRYAKU.jpg",null,"https://www.pokemon-card.com/assets/images/card_images/large/SM11b/037164_P_PIKACHUU.jpg",null],[null,null,null,null,"https://www.pokemon-card.com/assets/images/card_images/large//036903_P_MYUU.jpg",null,null,null,null]]};
+    const SAMPLE_DATA = {"title":"My Cards","pages":[[null,null,null,null,"https://www.pokemon-card.com/assets/images/card_images/large//036903_P_MYUU.jpg",null,null,null,null]]};
     let currentData;
     /**
      * Function to load data from an external JSON file with a fallback.
@@ -218,7 +214,7 @@
         try {
             const response = await fetch('./sample.json');
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`HTTP error: status: ${response.status}`);
             }
             currentData = await response.json();
             console.log("sample.json");
@@ -238,7 +234,17 @@
     const formatBtn = document.getElementById('formatBtn');
     const editorStatus = document.getElementById('editorStatus');
     const editorError = document.getElementById('editorError');
+    const titleSpan = document.getElementById('pageTitle');
 
+    // ====== Title Helper ======
+    function applyTitle(title) {
+        const t = (typeof title === 'string' && title.trim())
+            ? title.trim()
+            : 'Cards';
+
+        if (titleSpan) titleSpan.textContent = t;
+        document.title = t;
+    }
     // ====== UI Helpers ======
     function showEditorStatus(msg) {
         if (!msg) { editorStatus.hidden = true; editorStatus.textContent = ''; return; }
@@ -305,6 +311,11 @@
 
     function validateData(obj) {
         if (typeof obj !== 'object' || obj === null) throw new Error('Root must be an object.');
+
+        if ('title' in obj && typeof obj.title !== 'string') {
+            throw new Error('"title" must be a string if provided.');
+        }
+
         if (!Array.isArray(obj.pages)) throw new Error('Missing "pages" array.');
         obj.pages.forEach((page, i) => {
             if (!Array.isArray(page)) throw new Error(`pages[${i}] must be an array.`);
@@ -315,6 +326,14 @@
             });
         });
         return true;
+    }
+    function jsonHostingParser(escapedString) {
+        let trimmed = escapedString.trim();
+        if (trimmed.startsWith('"') && trimmed.endsWith('"')) {
+            trimmed = trimmed.slice(1, -1);
+        }
+        const unescaped = trimmed.replace(/\\"/g, '"').replace(/\\n/g, '\n');
+        return JSON.parse(unescaped);
     }
 
     // ====== Event wiring ======
@@ -351,6 +370,7 @@
         }
 
         currentData = parsed;
+        applyTitle(currentData.title);
         renderAlbum(currentData.pages);
         showEditorStatus('Applied ✓ — Album refreshed.');
         switchTab('album');
@@ -371,6 +391,7 @@
     // ====== Init ======
     (async function init() {
         await loadData();
+        applyTitle(currentData.title);
         renderAlbum(currentData.pages);
         jsonEditor.value = JSON.stringify(currentData, null, 2);
         switchTab('album');
