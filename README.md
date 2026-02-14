@@ -1,1 +1,1 @@
-https://dragonairex.github.io/card-display-board/
+https://dragonairex.github.io/ca-do-board/
