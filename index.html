@@ -1,11 +1,21 @@
-
 <!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>Cards Display Board</title>
+    <title>カードboard</title>
+    <meta property="og:title" content="カードboard" />
+    <meta name="twitter:title" content="カードboard" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Display board for trading cards." />
+    <meta name="description" content="Shareable 9 pocket display" />
+    <meta property="og:description" content="Shareable 9 pocket display" />
+    <meta name="twitter:description" content="Shareable 9 pocket display" />
+    <meta property="og:type" content="website" />
+
+    <meta property="og:url" content="https://yourwebsite.com" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="og:image" content="ico.png" />
+    <meta name="twitter:image" content="ico.png" />
+
     <style>
         :root {
             --bg: #0b0e14;
@@ -14,7 +24,7 @@
             --muted: #9aa4b2;
             --accent: #5ab4ff;
 
-            /* Board + slot colors per requirements */
+            /* Board + slot colors */
             --board-bg: #1a1a1a;      /* Dark grey display board */
             --slot-empty: #000000;    /* Solid black, darker than board */
             --card-bg: #151515;       /* Base for non-empty slots while loading */
@@ -152,6 +162,7 @@
 <header>
     <div class="wrap topbar">
         <div class="title">
+<<<<<<< Updated upstream
             <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff" aria-hidden="true" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <g transform="translate(12, 12) rotate(-15) translate(-12, -12)">
                     <rect x="3" y="1" width="10" height="18" rx="2"/>
@@ -162,17 +173,17 @@
                 </g>
             </svg>
             <span id="pageTitle" contenteditable="true">Cards</span>
+=======
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="#fff" aria-hidden="true" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(12, 12) rotate(-15) translate(-12, -12)"><rect x="3" y="1" width="10" height="18" rx="2"/></g><rect x="7" y="1" width="10" height="18" rx="2"/><g transform="translate(12, 12) rotate(15) translate(-12, -12)"><rect x="11" y="1" width="10" height="18" rx="2"/></g></svg>
+            <span contenteditable="true">Cards</span>
+>>>>>>> Stashed changes
         </div>
         <nav class="tabs" aria-label="Views">
-            <button class="tab active" data-tab="album">
-                <svg width="1.5em" height="1.5em" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="currentColor" class="size-4">
-                    <rect x="5" y="4" width="6" height="7" rx="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></rect>
-                    <rect x="14" y="4" width="6" height="7" rx="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></rect>
-                    <rect x="5" y="14" width="6" height="7" rx="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></rect>
-                    <rect x="14" y="14" width="6" height="7" rx="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></rect>
+            <button class="tab active" data-tab="album"><svg width="1.5em" height="1.5em" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="currentColor" class="size-4"><rect x="5" y="4" width="6" height="7" rx="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></rect><rect x="14" y="4" width="6" height="7" rx="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></rect><rect x="5" y="14" width="6" height="7" rx="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></rect><rect x="14" y="14" width="6" height="7" rx="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></rect>
                 </svg>Board</button>
             <button class="tab" data-tab="editor">
-                <svg width="1.5em" height="1.5em" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="currentColor" class="size-4"><path d="M13.5 6L10 18.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path><path d="M6.5 8.5L3 12L6.5 15.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path><path d="M17.5 8.5L21 12L17.5 15.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path></svg>Editor</button>
+                <svg width="1.5em" height="1.5em" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="currentColor" class="size-4"><path d="M13.5 6L10 18.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path><path d="M6.5 8.5L3 12L6.5 15.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path><path d="M17.5 8.5L21 12L17.5 15.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>Editor</button>
         </nav>
     </div>
 </header>
